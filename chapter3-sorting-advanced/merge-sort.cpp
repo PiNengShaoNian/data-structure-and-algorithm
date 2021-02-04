@@ -47,6 +47,21 @@ void mergeSort(T arr[], int n) {
     delete[] aux;
 }
 
+template <typename T>
+void mergeSortBU(T arr[], int n) {
+    T *aux = new T[n];
+
+    for (int size = 1; size <= n; size += size) {
+        for (int i = 0; i + size < n; i += size + size) {
+            merge(i, i + size - 1, min(i + size + size - 1, n - 1), arr, aux);
+        }
+    }
+
+    mergeSort(arr, 0, n - 1, aux);
+
+    delete[] aux;
+}
+
 int main() {
     int n = 1e6;
     int *arr = SortTestHelper::generateRandomArray(n, 0, n);
@@ -60,6 +75,12 @@ int main() {
 
     SortTestHelper::testSort("mergeSort", mergeSort, arr2, n);
 
+    int *arr3 = SortTestHelper::generateRandomArray(n, 0, n);
+
+    assert(SortTestHelper::isSorted(arr3, n) == false);
+    mergeSortBU(arr3, n);
+    assert(SortTestHelper::isSorted(arr3, n) == true);
     delete[] arr;
     delete[] arr2;
+    delete[] arr3;
 }
